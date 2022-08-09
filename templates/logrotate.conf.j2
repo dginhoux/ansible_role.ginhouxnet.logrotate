@@ -1,0 +1,11 @@
+# {{ ansible_managed }}
+
+# see "man logrotate" for details
+{% if logrotate_global_options is defined and logrotate_global_options | length > 0 %}
+{% for option in logrotate_global_options %}
+{{ option }}
+{% endfor %}
+{% endif %}
+
+# packages drop log rotation information into this directory
+include {{ logrotate_custom_conf_dir }}

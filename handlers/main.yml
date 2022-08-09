@@ -1,0 +1,10 @@
+---
+- name: restart logrotate
+  systemd:
+    name: "{{ item }}"
+    state: restarted
+    enabled: yes
+    daemon_reload: yes
+  loop: "{{ logrotate_services | flatten }}"
+  when: logrotate_enable is true
+  listen: restart_logrotate
