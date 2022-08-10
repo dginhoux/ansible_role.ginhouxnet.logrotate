@@ -1,4 +1,4 @@
-ginhouxnet.rsyslog
+ginhouxnet.logrotate
 =========
 
 This ansible role configure logrotate and only use new syntax !
