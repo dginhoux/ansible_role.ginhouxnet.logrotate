@@ -1,7 +1,7 @@
 ---
 
 galaxy_info:
-  role_name: ginhouxnet.logrotate
+  role_name: logrotate
   description: configure logrotate
   author: dginhoux
   company: ginhouxnet
