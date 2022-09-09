@@ -1,4 +1,4 @@
-ginhouxnet.logrotate
+Ansible Role : dginhoux.logrotate
 =========
 
 This ansible role configure logrotate
