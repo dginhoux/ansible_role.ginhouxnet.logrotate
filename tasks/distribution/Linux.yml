@@ -1,26 +1,22 @@
 ---
-
 - name: install and configure logrotate packages
   package:
     name: "{{ item }}"
     state: present
   loop: "{{ logrotate_packages | flatten }}"
 
-
 # - name: remove logrotate configuration dir
 #   file:
 #     state: absent
 #     path: "{{ logrotate_custom_conf_dir }}"
 
-
-- name: create logrotate configuration dir 
+- name: create logrotate configuration dir
   file:
     state: directory
     path: "{{ logrotate_custom_conf_dir }}"
     mode: 755
     owner: root
     group: root
-
 
 # - name: generate custom configuration files
 #   template:
@@ -33,8 +29,6 @@
 #   loop: "{{ logrotate_custom_rules_list | flatten }}"
 #   when: logrotate_custom_rules_configure is true
 #   # notify: restart_logrotate
-
-
 - name: generate custom configuration files
   template:
     src: custom.conf.j2
@@ -47,13 +41,12 @@
   loop_control:
     loop_var: custom
   when: >
-        logrotate_custom_configure is true
-        and
-        custom.state is defined
-        and 
-        custom.state == "present"
+    logrotate_custom_configure is true
+    and
+    custom.state is defined
+    and
+    custom.state == "present"
   # notify: restart_logrotate
-
 
 - name: remove custom configuration files
   file:
@@ -63,13 +56,12 @@
   loop_control:
     loop_var: custom
   when: >
-        logrotate_custom_configure is true
-        and
-        custom.state is defined
-        and 
-        custom.state == "absent"
+    logrotate_custom_configure is true
+    and
+    custom.state is defined
+    and
+    custom.state == "absent"
   # notify: restart_logrotate
-
 
 - name: generate global configuration file
   template:
@@ -79,34 +71,30 @@
     owner: root
     group: root
     mode: 0440
-  # notify: restart_logrotate
-
+# notify: restart_logrotate
 
 - name: validate configuration
   shell:
     cmd: "logrotate --debug {{ logrotate_main_conf_file }}"
   notify: restart_logrotate
 
-
 - name: disable and stop logrotate services
   systemd:
     name: "{{ item }}"
     state: stopped
-    enabled: no
-    daemon_reload: yes
+    enabled: false
+    daemon_reload: true
   loop: "{{ logrotate_services | flatten }}"
   when: logrotate_enable is false
-
 
 - name: enable and start logrotate services
   systemd:
     name: "{{ item }}"
     state: started
-    enabled: yes
-    daemon_reload: yes
+    enabled: true
+    daemon_reload: true
   loop: "{{ logrotate_services | flatten }}"
   when: logrotate_enable is true
-
 
 - name: enable cron hourly rotation
   file:
@@ -115,7 +103,6 @@
     mode: 0644
     state: link
   when: logrotate_enable_cron_hourly_rotation | bool
-
 
 - name: disable cron hourly rotation
   file:

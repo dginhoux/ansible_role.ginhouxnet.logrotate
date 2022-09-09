@@ -1,5 +1,4 @@
 ---
-
 logrotate_configure: install
 logrotate_packages:
   - logrotate
@@ -7,10 +6,8 @@ logrotate_services:
   - logrotate
 logrotate_enable: true
 
-
 logrotate_main_conf_file: /etc/logrotate.conf
 logrotate_custom_conf_dir: /etc/logrotate.d
-
 
 logrotate_global_options:
   - weekly
@@ -20,12 +17,9 @@ logrotate_global_options:
   # - su root syslog
   - compress
 
-
 logrotate_enable_cron_hourly_rotation: false
 
-
 logrotate_custom_configure: true
-
 
 # logrotate_custom_list: []
 logrotate_custom_list:
