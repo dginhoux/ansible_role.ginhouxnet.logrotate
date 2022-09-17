@@ -1,17 +1,17 @@
 ---
 - name: install and configure logrotate packages
-  package:
+  ansible.builtin.package:
     name: "{{ item }}"
     state: present
   loop: "{{ logrotate_packages | flatten }}"
 
 # - name: remove logrotate configuration dir
-#   file:
+#   ansible.builtin.file:
 #     state: absent
 #     path: "{{ logrotate_custom_conf_dir }}"
 
 - name: create logrotate configuration dir
-  file:
+  ansible.builtin.file:
     state: directory
     path: "{{ logrotate_custom_conf_dir }}"
     mode: 755
@@ -19,7 +19,7 @@
     group: root
 
 # - name: generate custom configuration files
-#   template:
+#   ansible.builtin.template:
 #     src: custom.conf.j2
 #     dest: "{{ logrotate_custom_conf_dir }}/{{ item.name }}.conf"
 #     # validate: "{{ 'logrotated -N1 -f %s' if item.value.validate | default(true) else 'true %s' }}"
@@ -30,7 +30,7 @@
 #   when: logrotate_custom_rules_configure is true
 #   # notify: restart_logrotate
 - name: generate custom configuration files
-  template:
+  ansible.builtin.template:
     src: custom.conf.j2
     dest: "{{ logrotate_custom_conf_dir }}/{{ custom.name }}"
     # validate: "{{ 'logrotated -N1 -f %s' if item.value.validate | default(true) else 'true %s' }}"
@@ -49,7 +49,7 @@
   # notify: restart_logrotate
 
 - name: remove custom configuration files
-  file:
+  ansible.builtin.file:
     state: absent
     path: "{{ logrotate_custom_conf_dir }}/{{ custom.name }}"
   loop: "{{ logrotate_custom_list | flatten }}"
@@ -64,7 +64,7 @@
   # notify: restart_logrotate
 
 - name: generate global configuration file
-  template:
+  ansible.builtin.template:
     src: logrotate.conf.j2
     dest: "{{ logrotate_main_conf_file }}"
     # validate: "logrotate --debug {{ logrotate_main_conf_file }}"
@@ -74,12 +74,12 @@
 # notify: restart_logrotate
 
 - name: validate configuration
-  shell:
+  ansible.builtin.shell:
     cmd: "logrotate --debug {{ logrotate_main_conf_file }}"
   notify: restart_logrotate
 
 - name: disable and stop logrotate services
-  systemd:
+  ansible.builtin.systemd:
     name: "{{ item }}"
     state: stopped
     enabled: false
@@ -88,7 +88,7 @@
   when: logrotate_enable is false
 
 - name: enable and start logrotate services
-  systemd:
+  ansible.builtin.systemd:
     name: "{{ item }}"
     state: started
     enabled: true
@@ -97,7 +97,7 @@
   when: logrotate_enable is true
 
 - name: enable cron hourly rotation
-  file:
+  ansible.builtin.file:
     path: /etc/cron.hourly/logrotate
     src: /etc/cron.daily/logrotate
     mode: 0644
@@ -105,7 +105,7 @@
   when: logrotate_enable_cron_hourly_rotation | bool
 
 - name: disable cron hourly rotation
-  file:
+  ansible.builtin.file:
     path: /etc/cron.hourly/logrotate
     state: absent
   when: not logrotate_enable_cron_hourly_rotation | bool
