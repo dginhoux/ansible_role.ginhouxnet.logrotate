@@ -1,7 +1,7 @@
 ---
 galaxy_info:
   role_name: logrotate
-  description: configure logrotate
+  description: dginhoux.logrotate
   author: Dany GINHOUX
   company: dginhoux
   license: MIT

@@ -1,40 +1,241 @@
-Ansible Role : dginhoux.logrotate
-=========
-
-This ansible role configure logrotate
-
-
-Requirements
-------------
-
-This role require a supported platform defined in `meta/main.yml`.
-It will skip node with unsupported platform ; this behaviour can be bypassed by settings this variable `asserts_bypass=True`.
-
-
-Role Variables
---------------
-
-Necessary variables are defined on `defaults/main.yml`
-
-
-Dependencies
-------------
-
-none
-
-
-Example Playbook
-----------------
+# ROLE dginhoux.logrotate
 
 
 
-License
--------
+## DESCRIPTION
 
-BSD
+This ansible role configure logrotate.
 
 
-Author Information
-------------------
+## REQUIREMENTS
 
-https://github.com/dginhoux/
+#### SUPPORTED PLATFORMS
+
+This role require a supported platform.<br />
+It will skip node with unsupported platform to avoid any compatibility problem.<br />
+This behaviour can be bypassed by settings the following variable `asserts_bypass=True`.
+
+| Platform | Versions |
+|----------|----------|
+| Debian | buster, bullseye |
+| Fedora | 33, 34, 35, 36 |
+| EL | 7, 8 |
+
+#### ANSIBLE VERSION
+
+Ansible >= 2.12
+
+#### DEPENDENCIES
+
+None.
+
+
+
+## INSTALLATION
+
+#### ANSIBLE GALAXY
+
+```shell
+ansible-galaxy install dginhoux.git_repos
+```
+#### GIT
+
+```shell
+git clone https://github.com/dginhoux/ansible_role.logrotate dginhoux.logrotate
+```
+
+
+## USAGE
+
+#### EXAMPLE PLAYBOOK
+
+```yaml
+- hosts: all
+  roles:
+    - name: start role dginhoux.logrotate
+      ansible.builtin.include_role:
+        name: dginhoux.logrotate
+```
+
+
+## VARIABLES
+
+#### DEFAULT VARIABLES
+
+Defaults variables defined in `defaults/main.yml` : 
+
+```yaml
+logrotate_configure: install
+logrotate_packages:
+  - logrotate
+logrotate_services:
+  - logrotate
+logrotate_enable: true
+
+logrotate_main_conf_file: /etc/logrotate.conf
+logrotate_custom_conf_dir: /etc/logrotate.d
+
+logrotate_global_options:
+  - weekly
+  - rotate 4
+  - create
+  - dateext
+  # - su root syslog
+  - compress
+
+logrotate_enable_cron_hourly_rotation: false
+
+logrotate_custom_configure: true
+
+# logrotate_custom_list: []
+logrotate_custom_list:
+  # - name: TEMPLATE
+  #   state: present
+  #   definitions:
+  #     - logs:
+  #         - /var/log/TEMPLATE.LOG
+  #       options:
+  #         - rotate 1
+  #         - daily
+  #         - missingok
+  #         - notifempty
+  #         - compress
+  #       preremove: []
+  #       postrotate: []
+  #       firstaction: []
+  #       lastaction: []
+  - name: syslog
+    state: absent
+  - name: rsyslog
+    state: absent
+  - name: wtmp
+    state: present
+    definitions:
+      - logs:
+          - /var/log/wtmp
+        options:
+          - rotate 1
+          - daily
+          - missingok
+          - notifempty
+          - compress
+          - create 0660 root utmp
+  - name: btmp
+    state: present
+    definitions:
+      - logs:
+          - /var/log/btmp
+        options:
+          - rotate 1
+          - daily
+          - missingok
+          - notifempty
+          - compress
+          - create 0660 root utmp
+  - name: auth
+    state: present
+    definitions:
+      - logs:
+          - /var/log/auth.log
+        options:
+          - rotate 5
+          - daily
+          - missingok
+          - notifempty
+          - compress
+  - name: kern
+    state: present
+    definitions:
+      - logs:
+          - /var/log/kern.log
+        options:
+          - rotate 5
+          - daily
+          - missingok
+          - notifempty
+          - compress
+  - name: messages
+    state: present
+    definitions:
+      - logs:
+          - /var/log/messages
+        options:
+          - rotate 5
+          - daily
+          - missingok
+          - notifempty
+          - compress
+  - name: mail
+    state: present
+    definitions:
+      - logs:
+          - /var/log/maillog
+        options:
+          - rotate 5
+          - daily
+          - missingok
+          - notifempty
+          - compress
+  - name: daemon
+    state: present
+    definitions:
+      - logs:
+          - /var/log/daemon.log
+        options:
+          - rotate 5
+          - daily
+          - missingok
+          - notifempty
+          - compress
+  - name: cron
+    state: present
+    definitions:
+      - logs:
+          - /var/log/cron.log
+        options:
+          - rotate 5
+          - daily
+          - missingok
+          - notifempty
+          - compress
+  - name: lpr
+    state: present
+    definitions:
+      - logs:
+          - /var/log/lpr.log
+        options:
+          - rotate 5
+          - daily
+          - missingok
+          - notifempty
+          - compress
+  - name: bootlog
+    state: present
+    definitions:
+      - logs:
+          - /var/log/boot.log
+        options:
+          - rotate 5
+          - daily
+          - missingok
+          - notifempty
+          - compress
+```
+
+#### DEFAULT OS SPECIFIC VARIABLES
+
+Those variables files are located in `vars/*.yml` are used to handle OS differences.<br />
+One of theses is loaded dynamically during role runtime using the `include_vars` module and set OS specifics variable's.
+
+`NOT USED BY THIS ROLE`
+
+
+## AUTHOR
+
+Dany GINHOUX - https://github.com/dginhoux
+
+
+
+## LICENSE
+
+MIT
