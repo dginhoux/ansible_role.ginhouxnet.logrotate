@@ -1,7 +1,8 @@
 ---
 galaxy_info:
   role_name: logrotate
-  description: dginhoux.logrotate
+  description: |
+    This ansible role configure logrotate.
   author: Dany GINHOUX
   company: dginhoux
   license: MIT
