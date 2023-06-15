@@ -74,7 +74,7 @@
 # notify: restart_logrotate
 
 - name: validate configuration
-  ansible.builtin.shell:
+  ansible.builtin.command:
     cmd: "logrotate --debug {{ logrotate_main_conf_file }}"
   notify: restart_logrotate
 
